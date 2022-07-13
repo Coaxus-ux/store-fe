@@ -5,18 +5,30 @@ import CategoriesPage from "./pages/CategoriesPage";
 import ProductsPage from "./pages/ProductsPage";
 
 import { ProductProvider } from "./context/ProductProvider";
+import { AuthProvider } from "./context/AuthProvider";
+import { CategoryProvider } from "./context/CategoryProvider";
 function App() {
+
+
+  
   return (
-    <>
-      <ProductProvider>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="categories" element={<CategoriesPage />} />
-          <Route path="products/:id" element={<ProductsPage />} />
-        </Routes>
+    <AuthProvider>
+    <ProductProvider>
+      <CategoryProvider>
+        
+          <Routes>
+          <Route path="/" element={<Login /> } />
+           
+            
+            
+            <Route path="register" element={<Register />} />
+            <Route path="categories" element={ <CategoriesPage />} />
+            <Route path="products/:id" element={<ProductsPage />} />
+          </Routes>
+        
+      </CategoryProvider>
       </ProductProvider>
-    </>
+    </AuthProvider>
   );
 }
 

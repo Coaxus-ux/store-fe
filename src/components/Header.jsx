@@ -1,12 +1,19 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom';
 import AddCategorieModal from "./AddCategorieModal";
 import AddProductModal from "./AddProductModal";
 const Header = () => {
-
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("_id");
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+  const name = localStorage.getItem("name");
   return (
     <div className="flex justify-between m-5">
       <div>
-        <h1 className="text-center">JULIAN MARINO TRUJILLO</h1>
+        <h1 className="text-center">{name}</h1>
       </div>
       <div>
         <div className="dropdown dropdown-hover">
@@ -29,21 +36,23 @@ const Header = () => {
             </li>
           </ul>
         </div>
-        <button className="ml-2 btn btn-error">SALIR</button>
+        <button onClick={logout} className="ml-2 btn btn-error">SALIR</button>
       </div>
 
 
 
       <input type="checkbox" id="my-modal-6" className="modal-toggle" />
-      <div className="modal modal-bottom sm:modal-middle">
+      <label htmlFor="my-modal-6" className="modal cursor-pointer">
         <AddCategorieModal />
-      </div>
+      </label>
 
       <input type="checkbox" id="my-modal-5" className="modal-toggle" />
-      <div className="modal modal-bottom sm:modal-middle">
+      <label htmlFor="my-modal-5" className="modal cursor-pointer">
         <AddProductModal />
-      </div>
+      </label>
+      
     </div>
+    
   );
 };
 export default Header;

@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import useCategory from "../hooks/useCategory";
-const AddCategorieModal = ({}) => {
-  const { AddCategory } = useCategory();
+const UpdateCategorieModal = () => {
+    const closeButton = document.getElementById("closeButton");
+  const { UpdateCategory, toUpdate } = useCategory();
   const [error, setError] = useState({
     status: false,
     msg: "",
   });
   const [success, setSuccess] = useState(false);
-
   const [category, setCategory] = useState({
+    _id: "",
     name: "",
     description: "",
   });
+  useEffect(() => {
+    setCategory({
+        _id: toUpdate._id,
+        name: toUpdate.name,
+        description: toUpdate.description,
+    });
+  }, [toUpdate]);
+  
   const { name, description } = category;
   const OnHandleChange = (e) => {
     setCategory({
@@ -24,7 +33,7 @@ const AddCategorieModal = ({}) => {
     });
     setSuccess(false);
   };
-  
+
   const OnHandleSubmit = async (e) => {
     e.preventDefault();
     if (category.name === "" || category.description === "") {
@@ -35,7 +44,7 @@ const AddCategorieModal = ({}) => {
       return;
     }
 
-    const categoryRes = await AddCategory(category);
+    const categoryRes = await UpdateCategory(category);
 
     if (categoryRes.state) {
       setSuccess(true);
@@ -43,10 +52,9 @@ const AddCategorieModal = ({}) => {
         name: "",
         description: "",
       });
-      setTimeout(() => {
-
+      
+      closeButton.click();
       setSuccess(false);
-      }, 2000);
     } else {
       setError({
         status: true,
@@ -56,9 +64,30 @@ const AddCategorieModal = ({}) => {
   };
   
   return (
-    <label className="modal-box relative" htmlFor="">
-      <h3 className="font-bold text-lg p-2">Agregar categoria</h3>
+    <label class="modal-box relative" for="">
+      <h3 class="font-bold text-lg p-2">Editar categoria</h3>
 
+      {success && (
+        <div className="alert alert-success shadow-lg my-4">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current flex-shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>La categoria se edito correctamente</span>
+          </div>
+        </div>
+      )}
+      
       {error.status && (
         <div className="alert alert-error shadow-lg my-4 ">
           <div>
@@ -79,28 +108,6 @@ const AddCategorieModal = ({}) => {
           </div>
         </div>
       )}
-
-      {success && (
-        <div className="alert alert-success shadow-lg my-4">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>La categoria se agrego correctamente</span>
-          </div>
-        </div>
-      )}
-
       <form 
         onChange={OnHandleChange}
       >
@@ -123,8 +130,8 @@ const AddCategorieModal = ({}) => {
             Agregar
           </button>
           <label
-            id="cancelLabel"
-            htmlFor="my-modal-6"
+            htmlFor="my-modal-4"
+            id="closeButton"
             className="btn btn-error"
           >
             Cancelar
@@ -134,4 +141,4 @@ const AddCategorieModal = ({}) => {
     </label>
   );
 };
-export default AddCategorieModal;
+export default UpdateCategorieModal;

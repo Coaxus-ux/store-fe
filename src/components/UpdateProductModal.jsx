@@ -1,75 +1,104 @@
-import { useState, useEffect } from "react";
-import useCategory from "../hooks/useCategory";
+import { useState, useEffect  } from "react";
 import useProduct from "../hooks/useProduct";
-const AddProductModal = (props) => {
+import useCategory from "../hooks/useCategory";
+
+const UpdateCategorieModal = () => {
+  const closeButton = document.getElementById("closeButton");
   const { GetCategories, categories } = useCategory();
-  const { AddProduct } = useProduct();
+  const { toUpdateProduct, setToUpdateProduct, UpdateProduct } = useProduct();
+  
+  const [error, setError] = useState({
+    status: false,
+    msg: "",
+  });
   const [success, setSuccess] = useState(false);
-  const [product , setProduct] = useState({
+  const [product, setProduct] = useState({
+    _id: "",
     name: "",
     description: "",
     price: "",
     category: "",
   });
-  const [error, setError] = useState({
-    status: false,
-    msg: "",
-  });
+  console.log("product", toUpdateProduct);
   useEffect(() => {
     GetCategories();
-  }, []);
+    setProduct({
+        _id: toUpdateProduct._id,
+        name: toUpdateProduct.name,
+        description: toUpdateProduct.description,
+        price: toUpdateProduct.price,
+        category: toUpdateProduct.category,
 
-  const onHandleChange = (e) => {
+    });
+  }, [toUpdateProduct]);
+  const { name, description, price } = product;
+  console.log(product);
+  const OnHandleChange = (e) => {
     setProduct({
       ...product,
       [e.target.name]: e.target.value,
     });
     setError({
-      status: false,
+      error: false,
       msg: "",
     });
     setSuccess(false);
-  }
-  const onHandleSubmit = async (e) => {
+  };
+
+  const OnHandleSubmit = async (e) => {
     e.preventDefault();
-    console.log(product);
-    if (product.name === "" || product.description === "" || product.price === "" || product.category === "") {
+    if (product.name === "" || product.description === "") {
       setError({
         status: true,
         msg: "Todos los campos son obligatorios",
       });
       return;
     }
-    console.log("product");
-    const productRes = await AddProduct(product);
-    console.log(productRes);
-    if (productRes.state) {
+
+    const categoryRes = await UpdateProduct(product);
+
+    if (categoryRes.state) {
+      setSuccess(true);
       setProduct({
         name: "",
         description: "",
-        price: "",
-        category: "",
       });
-      setError({
-        status: false,
-        msg: "",
-      });
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }
-        , 2000);
-
+      
+      closeButton.click();
+      setSuccess(false);
     } else {
       setError({
         status: true,
-        msg: productRes.msg,
+        msg: categoryRes.msg,
       });
     }
-  }
+  };
+  
   return (
-    <div className="modal-box">
-      <h3 className="font-bold text-lg p-2">Agregar producto</h3>
+    <label class="modal-box relative" for="">
+      <h3 class="font-bold text-lg p-2">Editar categoria</h3>
+
+      {success && (
+        <div className="alert alert-success shadow-lg my-4">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current flex-shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>La categoria se edito correctamente</span>
+          </div>
+        </div>
+      )}
+      
       {error.status && (
         <div className="alert alert-error shadow-lg my-4 ">
           <div>
@@ -90,38 +119,20 @@ const AddProductModal = (props) => {
           </div>
         </div>
       )}
-      {success && (
-        <div className="alert alert-success shadow-lg my-4">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>La categoria se agrego correctamente</span>
-          </div>
-        </div>
-      )}
-      <form
-        onChange={onHandleChange}
+      <form 
+        onChange={OnHandleChange}
       >
         <input
           type="text"
           name="name"
           placeholder="Nombre del producto"
+          value={name}
           className="input input-bordered input-info w-full mb-5"
         />
         <input
           type="text"
           name="description"
+          value={description}
           placeholder="Descripción del producto"
           className="input input-bordered input-info w-full mb-5"
         />
@@ -130,6 +141,7 @@ const AddProductModal = (props) => {
           placeholder="precio del producto"
           min={0}
           name="price"
+          value={price}
           className="input input-bordered input-info w-full mb-5"
         />
         <select name="category" className="select select-bordered w-full ">
@@ -143,15 +155,20 @@ const AddProductModal = (props) => {
               </option>
             ))}
         </select>
-
         <div className="modal-action">
-          <button onClick={onHandleSubmit} className="btn btn-success">Agregar</button>
-          <label htmlFor="my-modal-5" className="btn">
+          <button onClick={OnHandleSubmit} className="btn btn-success">
+            Agregar
+          </button>
+          <label
+            htmlFor="my-modal-9"
+            id="closeButton"
+            className="btn btn-error"
+          >
             Cancelar
           </label>
         </div>
       </form>
-    </div>
+    </label>
   );
 };
-export default AddProductModal;
+export default UpdateCategorieModal;
