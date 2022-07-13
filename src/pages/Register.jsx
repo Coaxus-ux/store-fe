@@ -67,7 +67,12 @@ const Register = () => {
       });
       return;
     }
+    
+
+    
     reactModel.click();
+
+    
   };
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-rows-1 grid-flow-row w-auto h-screen">

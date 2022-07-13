@@ -1,4 +1,9 @@
+import {useNavigate} from 'react-router-dom';
 const SuccessfulModal = () => {
+  const navigation = useNavigate();
+  const onHandleClick = () => {
+    navigation('/');
+  }
   return (
     <div className="modal-box">
       <h3 className="font-bold text-lg">Se ha registrado con exito</h3>
@@ -8,9 +13,9 @@ const SuccessfulModal = () => {
       <div className="modal-action">
         <label htmlFor="my-modal" className="btn">
           <a
-            href="/categories"
+            onClick={onHandleClick}
           >
-          ir a la plataforma 
+          Iniciar session
           </a>
           
         </label>
